@@ -17,14 +17,31 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js -d database/config/typeorm.config.ts",
+    "drop-db": "npm run typeorm schema:drop",
+    "mig-gen": "npm run typeorm migration:generate -- database/migrations/Init",
+    "mig-run": "npm run typeorm migration:run",
+    "delete-migrations": "rimraf --glob database/migrations/*",
+    "mig-rev": "npm run typeorm migration:revert",
+    "db:create": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:create",
+    "seed": "ts-node -r tsconfig-paths/register node_modules/typeorm-extension/bin/cli.cjs seed:run -d database/config/typeorm.config.ts",
+    "seed-referesh": "npm run drop-db && npm run delete-migrations && npm run mig-gen && npm run mig-run && npm run seed"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
+    "@nestjs/config": "^3.2.2",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/typeorm": "^10.0.2",
+    "@types/bcrypt": "^5.0.2",
+    "bcrypt": "^5.1.1",
+    "class-transformer": "^0.5.1",
+    "mysql2": "^3.9.9",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "typeorm": "^0.3.20",
+    "typeorm-extension": "^3.5.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

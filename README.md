@@ -37,7 +37,7 @@ $ yarn run test:e2e
 $ yarn run test:cov
 ```
 
-- setup nestjsx\crud | crud nestjsx with pacakge | nestjs crud | crud nestjs with pacakage 
+- setup nestjsx\crud | crud nestjsx with pacakge | nestjs crud | crud nestjs with pacakage
 - yarn run mig-gen database/migrations/{Name}
 
 ## seed-referesh
@@ -47,9 +47,13 @@ $ yarn run test:cov
 ```
 
 ### Drop all tables from database
+
 ```bash
-  "drop-db": "npm run typeorm schema:drop", 
+  "drop-db": "npm run typeorm schema:drop",
 ```
 
 ## Note:
+
 Key: check_in_keep_or_env_same45
+
+- npx prettier --write . "Fix: Delete `␍`eslintprettier/prettier fix it " 
