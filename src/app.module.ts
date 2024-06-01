@@ -2,11 +2,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 // import { SongsModule } from './songs/songs.module';
-// import { CompaniesModule } from './company/company.module';
-// import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // import { PostModule } from './post/post.module';
 import { UserModule } from './user/user.module';
+import { CompaniesModule } from './company/company.module';
 // import { AuthModule } from './auth/auth.module';
 
 @Module({
@@ -25,6 +24,7 @@ import { UserModule } from './user/user.module';
       synchronize: false,
     }),
     UserModule,
+    CompaniesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -5,10 +5,22 @@
 - Project Name: `nestjs-codebase`
 - Title: Nestjs-codebase
 
+## Config
+
+```bash
+$ cp .env.example .env
+```
+
+Config your env
+
 ## Installation
 
 ```bash
 $ yarn install
+```
+
+```bash
+$ npm run seed-refresh
 ```
 
 ## Running the app
@@ -56,4 +68,8 @@ $ yarn run test:cov
 
 Key: check_in_keep_or_env_same45
 
-- npx prettier --write . "Fix: Delete `␍`eslintprettier/prettier fix it " 
+- npx prettier --write . "Fix: Delete `␍`eslintprettier/prettier fix it "
+
+## Fix error Cannot destructure property 'parsed' of 'req' as it is null.
+
+- Check this: https://github.com/nestjsx/crud/issues/835#issuecomment-2143284774

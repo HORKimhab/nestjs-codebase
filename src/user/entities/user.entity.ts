@@ -1,6 +1,4 @@
-// import { DateEntity } from 'src/date.entity';
 import { Exclude } from 'class-transformer';
-// import { Post } from 'src/post/entities/post.entity';
 import {
   Column,
   CreateDateColumn,
