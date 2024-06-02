@@ -1,23 +1,19 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-// import { SongsModule } from './songs/songs.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // import { PostModule } from './post/post.module';
 import { UserModule } from './user/user.module';
 import { CompaniesModule } from './company/company.module';
-// import { AuthModule } from './auth/auth.module';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
+import { configDB } from './utils/config.db';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(), 
     TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '',
-      database: 'nestjs_codebase',
+      ...configDB,
       retryAttempts: 10,
       retryDelay: 3000,
       entities: [__dirname + '/**/*.entity.ts'],
