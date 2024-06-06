@@ -9,11 +9,13 @@ import { JwtModule } from '@nestjs/jwt';
 import jwtConfig from './config/jwt.config';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+// import { AccessTokenGuard } from './authentication/gurads/access-token/access-token.guard';
+import { AuthenticationGuard } from './authentication/gurads/authentication/authentication.guard';
 import { AccessTokenGuard } from './authentication/gurads/access-token/access-token.guard';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]), 
+    TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
   ],
@@ -23,11 +25,13 @@ import { AccessTokenGuard } from './authentication/gurads/access-token/access-to
       useClass: BcryptService,
     },
     {
-      provide: APP_GUARD, 
-      useClass: AccessTokenGuard, 
-    }, 
+      provide: APP_GUARD,
+      // useClass: AccessTokenGuard, 
+      useClass: AuthenticationGuard,
+    },
+    AccessTokenGuard,
     AuthenticationService,
   ],
   controllers: [AuthenticationController],
 })
-export class AuthModule {}
+export class AuthModule { }
