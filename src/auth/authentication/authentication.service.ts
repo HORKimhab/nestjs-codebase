@@ -27,7 +27,7 @@ export class AuthenticationService {
       user.email = signUpDto.email;
       user.password = await this.hashingService.hash(signUpDto.password)
 
-      await this.usersRepository.save(user);
+      return await this.usersRepository.save(user);
     } catch (err) {
       throw err;
     }
@@ -51,10 +51,20 @@ export class AuthenticationService {
       throw new UnauthorizedException('Email or password is incorrect.');
     }
 
-    const accestToken = await this.jwtService.signAsync(
+    const accestToken = await this.signToken(user)
+
+    return {
+      accestToken,
+      user,
+    };
+  }
+
+  private async signToken(user: User) {
+    return await this.jwtService.signAsync(
       {
         sub: user.id,
         email: user.email,
+        role: user.role,
       } as ActiveUserData,
       {
         audience: this.jwtConfiguration.audience,
@@ -62,12 +72,6 @@ export class AuthenticationService {
         secret: this.jwtConfiguration.secret,
         expiresIn: this.jwtConfiguration.accessTokenTtl,
       }
-    )
-
-    // TODO: 
-    return {
-      accestToken,
-      user,
-    };
+    );
   }
 }

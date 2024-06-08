@@ -1,9 +1,10 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+// authentication.guard.ts
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
 import { AccessTokenGuard } from '../access-token/access-token.guard';
 import { AuthType } from '../../enums/auth-type.enum';
-import { AUTH_TYPE_KEY } from '../../decorators/auth.decorator';
+import { AUTH_TYPE_KEY, ROLES_KEY } from '../../decorators/auth.decorator';
+import { UserRole } from "src/user/entities/user.entity";
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
@@ -14,7 +15,7 @@ export class AuthenticationGuard implements CanActivate {
   > = {
       [AuthType.Bearer]: this.accessTokenGuard,
       [AuthType.None]: { canActivate: () => true },
-    }
+    };
 
   constructor(
     private readonly reflector: Reflector,
@@ -25,19 +26,33 @@ export class AuthenticationGuard implements CanActivate {
     const authTypes = this.reflector.getAllAndOverride<AuthType[]>(
       AUTH_TYPE_KEY,
       [context.getHandler(), context.getClass()],
-    ) ?? [AuthenticationGuard.defaultAuthType]
+    ) ?? [AuthenticationGuard.defaultAuthType];
 
-    const gurads = authTypes.map((type) => this.authTypeGuardMap[type]).flat();
+    const roles = this.reflector.getAllAndOverride<UserRole[]>(
+      ROLES_KEY,
+      [context.getHandler(), context.getClass()],
+    );
+
+    const guards = authTypes.map((type) => this.authTypeGuardMap[type]).flat();
     let error = new UnauthorizedException();
 
-    for (const instance of gurads) {
+    for (const instance of guards) {
       const canActivate = await Promise.resolve(
         instance.canActivate(context),
       ).catch((err) => {
         error = err;
       });
 
-      if (canActivate) return true;
+      if (canActivate) {
+        if (roles && roles.length > 0) {
+          const request = context.switchToHttp().getRequest();
+          const user = request.user;
+          if (!user || !roles.some(role => user?.role.includes(role))) {
+            throw new ForbiddenException();
+          }
+        }
+        return true;
+      }
     }
 
     throw error;
