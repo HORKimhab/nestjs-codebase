@@ -8,65 +8,66 @@ import { SignInDto } from './dto/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
 import jwtConfig from '../config/jwt.config';
 import { ConfigType } from '@nestjs/config';
+import { ActiveUserData } from './interfaces/active-user-data.interface';
 
 @Injectable()
 export class AuthenticationService {
-    constructor(
-        @InjectRepository(User) private readonly usersRepository: Repository<User>,
-        private readonly hashingService: HashingService,
-        private readonly jwtService: JwtService,
-        @Inject(jwtConfig.KEY)
-        private readonly jwtConfiguration: ConfigType<typeof jwtConfig>
+  constructor(
+    @InjectRepository(User) private readonly usersRepository: Repository<User>,
+    private readonly hashingService: HashingService,
+    private readonly jwtService: JwtService,
+    @Inject(jwtConfig.KEY)
+    private readonly jwtConfiguration: ConfigType<typeof jwtConfig>
 
-    ) {}
+  ) { }
 
-    async signUp(signUpDto: SignUpDto) {
-        try {
-          const user = new User(); 
-          user.email = signUpDto.email; 
-          user.password = await this.hashingService.hash(signUpDto.password)
-          
-          await this.usersRepository.save(user);
-        } catch (err) {
-          throw err;
-        }
+  async signUp(signUpDto: SignUpDto) {
+    try {
+      const user = new User();
+      user.email = signUpDto.email;
+      user.password = await this.hashingService.hash(signUpDto.password)
+
+      await this.usersRepository.save(user);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async signIn(signInDto: SignInDto) {
+    const user = await this.usersRepository.findOneBy({
+      email: signInDto.email,
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('Email or password is incorrect.');
     }
 
-    async signIn(signInDto: SignInDto){
-      const user = await this.usersRepository.findOneBy({
-        email: signInDto.email,
-      });
+    const isCorrectPassword = await this.hashingService.compare(
+      signInDto.password,
+      user.password
+    )
 
-      if(!user){
-        throw new UnauthorizedException('Email or password is incorrect.');
-      }
-
-      const isCorrectPassword = await this.hashingService.compare(
-        signInDto.password, 
-        user.password
-      )
-
-      if(!isCorrectPassword) {
-        throw new UnauthorizedException('Email or password is incorrect.');
-      }
-
-      const accestToken = await this.jwtService.signAsync(
-        {
-          sub: user.id, 
-          email: user.email,
-        }, 
-        {
-          audience: this.jwtConfiguration.audience, 
-          issuer: this.jwtConfiguration.issuer, 
-          secret: this.jwtConfiguration.secret, 
-          expiresIn: this.jwtConfiguration.accessTokenTtl, 
-        }
-      )
-
-      // TODO: 
-      return {
-        accestToken, 
-        user,
-      }; 
+    if (!isCorrectPassword) {
+      throw new UnauthorizedException('Email or password is incorrect.');
     }
+
+    const accestToken = await this.jwtService.signAsync(
+      {
+        sub: user.id,
+        email: user.email,
+      } as ActiveUserData,
+      {
+        audience: this.jwtConfiguration.audience,
+        issuer: this.jwtConfiguration.issuer,
+        secret: this.jwtConfiguration.secret,
+        expiresIn: this.jwtConfiguration.accessTokenTtl,
+      }
+    )
+
+    // TODO: 
+    return {
+      accestToken,
+      user,
+    };
+  }
 }
