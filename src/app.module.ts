@@ -11,7 +11,7 @@ import { configDB } from './utils/config.db';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(), 
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       ...configDB,
       retryAttempts: 10,

@@ -17,15 +17,14 @@ export class AuthenticationService {
     private readonly hashingService: HashingService,
     private readonly jwtService: JwtService,
     @Inject(jwtConfig.KEY)
-    private readonly jwtConfiguration: ConfigType<typeof jwtConfig>
-
-  ) { }
+    private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
+  ) {}
 
   async signUp(signUpDto: SignUpDto) {
     try {
       const user = new User();
       user.email = signUpDto.email;
-      user.password = await this.hashingService.hash(signUpDto.password)
+      user.password = await this.hashingService.hash(signUpDto.password);
 
       return await this.usersRepository.save(user);
     } catch (err) {
@@ -44,14 +43,14 @@ export class AuthenticationService {
 
     const isCorrectPassword = await this.hashingService.compare(
       signInDto.password,
-      user.password
-    )
+      user.password,
+    );
 
     if (!isCorrectPassword) {
       throw new UnauthorizedException('Email or password is incorrect.');
     }
 
-    const accestToken = await this.signToken(user)
+    const accestToken = await this.signToken(user);
 
     return {
       accestToken,
@@ -71,7 +70,7 @@ export class AuthenticationService {
         issuer: this.jwtConfiguration.issuer,
         secret: this.jwtConfiguration.secret,
         expiresIn: this.jwtConfiguration.accessTokenTtl,
-      }
+      },
     );
   }
 }

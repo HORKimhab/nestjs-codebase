@@ -8,7 +8,7 @@ import { UserRole } from './entities/user.entity';
 import { AuthType } from 'src/auth/authentication/enums/auth-type.enum';
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Auth(UserRole.EDITOR)
   @Get()

@@ -26,7 +26,7 @@ import { AccessTokenGuard } from './authentication/gurads/access-token/access-to
     },
     {
       provide: APP_GUARD,
-      // useClass: AccessTokenGuard, 
+      // useClass: AccessTokenGuard,
       useClass: AuthenticationGuard,
     },
     AccessTokenGuard,
@@ -34,4 +34,4 @@ import { AccessTokenGuard } from './authentication/gurads/access-token/access-to
   ],
   controllers: [AuthenticationController],
 })
-export class AuthModule { }
+export class AuthModule {}

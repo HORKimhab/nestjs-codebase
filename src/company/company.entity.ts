@@ -17,7 +17,7 @@ export class Company {
     name: 'created_at',
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
-    precision: 0
+    precision: 0,
   })
   createdAt: Date;
 
@@ -26,7 +26,7 @@ export class Company {
     type: 'datetime',
     default: () => 'CURRENT_TIMESTAMP',
     onUpdate: 'CURRENT_TIMESTAMP',
-    precision: 0
+    precision: 0,
   })
   updatedAt: Date;
 
