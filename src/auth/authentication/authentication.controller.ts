@@ -12,10 +12,11 @@ import { SignInDto } from './dto/sign-in.dto';
 import { Response } from 'express';
 import { Auth } from './decorators/auth.decorator';
 import { AuthType } from './enums/auth-type.enum';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Controller('auth')
 export class AuthenticationController {
-  constructor(private readonly authService: AuthenticationService) {}
+  constructor(private readonly authService: AuthenticationService) { }
 
   @Auth(AuthType.None)
   @Post('sign-up')
@@ -51,5 +52,14 @@ export class AuthenticationController {
     });
 
     return { message: 'User logged out successfully' };
+  }
+
+  @Auth()
+  @HttpCode(HttpStatus.OK)
+  @Post('refresh-token')
+  async refreshTokens(
+    @Body() refreshTokenDto: RefreshTokenDto,
+  ) {
+    return this.authService.refreshToken(refreshTokenDto);
   }
 }

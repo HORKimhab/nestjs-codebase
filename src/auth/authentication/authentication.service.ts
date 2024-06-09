@@ -9,6 +9,8 @@ import { JwtService } from '@nestjs/jwt';
 import jwtConfig from '../config/jwt.config';
 import { ConfigType } from '@nestjs/config';
 import { ActiveUserData } from './interfaces/active-user-data.interface';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { pick } from 'lodash';
 
 @Injectable()
 export class AuthenticationService {
@@ -18,7 +20,8 @@ export class AuthenticationService {
     private readonly jwtService: JwtService,
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
-  ) {}
+  ) {
+  }
 
   async signUp(signUpDto: SignUpDto) {
     try {
@@ -50,27 +53,56 @@ export class AuthenticationService {
       throw new UnauthorizedException('Email or password is incorrect.');
     }
 
-    const accestToken = await this.signToken(user);
+    return await this.generateToken(user);
+  }
+
+  async generateToken(user: User) {
+    const [accestToken, refershToken] = await Promise.all([
+      this.signToken<Partial<ActiveUserData>>(
+        user,
+        this.jwtConfiguration.accessTokenTtl,
+        { email: user.email }
+      ),
+      this.signToken(
+        user,
+        this.jwtConfiguration.refreshTokenTtl)
+    ]);
 
     return {
       accestToken,
+      refershToken,
       user,
     };
   }
 
-  private async signToken(user: User) {
+  private async signToken<T>(user: User, expiresIn: number, payload?: T) {
     return await this.jwtService.signAsync(
       {
         sub: user.id,
-        email: user.email,
-        role: user.role,
-      } as ActiveUserData,
+        ...user,
+        ...payload,
+      },
       {
-        audience: this.jwtConfiguration.audience,
-        issuer: this.jwtConfiguration.issuer,
-        secret: this.jwtConfiguration.secret,
-        expiresIn: this.jwtConfiguration.accessTokenTtl,
+        ...pick(this.jwtConfiguration, ['secret', 'audience', 'issuer']),
+        expiresIn,
       },
     );
+  }
+
+  async refreshToken(refershTokenDto: RefreshTokenDto) {
+    try {
+      const { sub } = await this.jwtService.verifyAsync<Pick<ActiveUserData, 'sub'>>(
+        refershTokenDto.refershToken, {
+        ...pick(this.jwtConfiguration, ['secret', 'audience', 'issuer'])
+      });
+
+      const user = await this.usersRepository.findOneByOrFail({
+        id: sub
+      });
+
+      return this.generateToken(user);
+    } catch (err) {
+      throw new UnauthorizedException();
+    }
   }
 }
