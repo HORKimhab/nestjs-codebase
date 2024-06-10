@@ -20,8 +20,7 @@ export class AuthenticationService {
     private readonly jwtService: JwtService,
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
-  ) {
-  }
+  ) {}
 
   async signUp(signUpDto: SignUpDto) {
     try {
@@ -61,11 +60,9 @@ export class AuthenticationService {
       this.signToken<Partial<ActiveUserData>>(
         user,
         this.jwtConfiguration.accessTokenTtl,
-        { email: user.email }
+        { email: user.email },
       ),
-      this.signToken(
-        user,
-        this.jwtConfiguration.refreshTokenTtl)
+      this.signToken(user, this.jwtConfiguration.refreshTokenTtl),
     ]);
 
     return {
@@ -91,13 +88,14 @@ export class AuthenticationService {
 
   async refreshToken(refershTokenDto: RefreshTokenDto) {
     try {
-      const { sub } = await this.jwtService.verifyAsync<Pick<ActiveUserData, 'sub'>>(
-        refershTokenDto.refershToken, {
-        ...pick(this.jwtConfiguration, ['secret', 'audience', 'issuer'])
+      const { sub } = await this.jwtService.verifyAsync<
+        Pick<ActiveUserData, 'sub'>
+      >(refershTokenDto.refershToken, {
+        ...pick(this.jwtConfiguration, ['secret', 'audience', 'issuer']),
       });
 
       const user = await this.usersRepository.findOneByOrFail({
-        id: sub
+        id: sub,
       });
 
       return this.generateToken(user);

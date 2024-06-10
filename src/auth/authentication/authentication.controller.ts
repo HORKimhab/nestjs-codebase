@@ -16,7 +16,7 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Controller('auth')
 export class AuthenticationController {
-  constructor(private readonly authService: AuthenticationService) { }
+  constructor(private readonly authService: AuthenticationService) {}
 
   @Auth(AuthType.None)
   @Post('sign-up')
@@ -57,9 +57,7 @@ export class AuthenticationController {
   @Auth()
   @HttpCode(HttpStatus.OK)
   @Post('refresh-token')
-  async refreshTokens(
-    @Body() refreshTokenDto: RefreshTokenDto,
-  ) {
+  async refreshTokens(@Body() refreshTokenDto: RefreshTokenDto) {
     return this.authService.refreshToken(refreshTokenDto);
   }
 }
