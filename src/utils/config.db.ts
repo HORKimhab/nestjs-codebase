@@ -14,6 +14,7 @@ export const configDB: TypeOrmModuleOptions = {
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
+  logging: ['true', true, 1].includes(process.env.DB_LOGGING || false),
 };
 
 export const configRedis: RedisOptions = {
