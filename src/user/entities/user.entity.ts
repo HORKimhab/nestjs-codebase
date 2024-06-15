@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { PermissionType } from 'src/auth/authentication/permission.type';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -83,6 +84,13 @@ export class User {
     default: UserRole.EDITOR,
   })
   role: UserRole;
+
+  @Column({
+    type: 'json',
+    default: '[]',
+    nullable: true,
+  })
+  permissions: PermissionType[];
 
   @Column({
     name: 'is_activated',

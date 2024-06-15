@@ -67,7 +67,10 @@ export class AuthenticationService {
       this.signToken<Partial<ActiveUserData>>(
         user,
         this.jwtConfiguration.accessTokenTtl,
-        { email: user.email },
+        { 
+          email: user.email, 
+          permissions: user.permissions, 
+        },
       ),
       this.signToken(user, this.jwtConfiguration.refreshTokenTtl, {
         refreshTokenId,

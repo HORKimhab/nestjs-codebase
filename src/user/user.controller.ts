@@ -1,16 +1,17 @@
+import { Permissions } from './../auth/authentication/decorators/permission.decorator';
 import { Controller, Get, Param, Req } from '@nestjs/common';
-
 import { UserService } from './user.service';
 import { ActiveUser } from 'src/auth/authentication/decorators/active-user.decorator';
 import { ActiveUserData } from 'src/auth/authentication/interfaces/active-user-data.interface';
 import { Auth } from 'src/auth/authentication/decorators/auth.decorator';
 import { UserRole } from './entities/user.entity';
-import { AuthType } from 'src/auth/authentication/enums/auth-type.enum';
+import { Permission } from 'src/auth/authentication/permission.type';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Auth(UserRole.EDITOR)
+  // @Auth(UserRole.EDITOR)
+  @Permissions(Permission.Create)
   @Get()
   findAll(@ActiveUser() user: ActiveUserData) {
     return this.userService.findAll();
