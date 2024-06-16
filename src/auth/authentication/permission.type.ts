@@ -1,7 +1,7 @@
-import { UsersPermission } from "src/user/user.permission"
+import { UsersPermission } from 'src/user/user.permission';
 
 export const Permission = {
-  ...UsersPermission, 
+  ...UsersPermission,
 };
 
-export type PermissionType = UsersPermission; 
+export type PermissionType = UsersPermission;
