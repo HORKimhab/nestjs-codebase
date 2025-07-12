@@ -10,8 +10,8 @@ export const createTypeOrmOptions = (
     ...dbConfig,
     retryAttempts: 10,
     retryDelay: 3000,
-    entities: [__dirname + '/../**/*.entity{.ts,.js}'], // relative to this file
-    // autoLoadEntities: true,
-    // synchronize: false,
+    // entities: [__dirname + '/../**/*.entity{.ts,.js}'], // relative to this file
+    autoLoadEntities: true,
+    synchronize: false,
   };
 };

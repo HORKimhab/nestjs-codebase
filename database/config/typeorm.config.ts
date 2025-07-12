@@ -12,9 +12,9 @@ const options = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  entities: [__dirname + 'src/module/**/*.entity.ts'],
+  entities: [__dirname + '/../../src/**/*.entity.ts'],
   migrationsTableName: 'migrations',
-  migrations: [__dirname + 'src/database/migrations/**/*.ts'],
+  migrations: [__dirname + '/../migrations/**/*.ts'],
   seeds: [InitSeeder],
 };
 
