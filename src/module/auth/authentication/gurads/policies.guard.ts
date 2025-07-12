@@ -9,8 +9,8 @@ import {
 import { Reflector } from '@nestjs/core';
 import { POLICIES_KEY } from '../decorators/policies.decorator';
 import { ActiveUserData } from '../interfaces/active-user-data.interface';
-import { REQUEST_USER_KEY } from 'src/auth/auth.constants';
 import { PolicyHandlerStorage } from '../policies/policy-handler.storage';
+import { REQUEST_USER_KEY } from '../../auth.constants';
 
 @Injectable()
 export class PoliciesGuard implements CanActivate {

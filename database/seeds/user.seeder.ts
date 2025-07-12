@@ -1,5 +1,5 @@
 import { hash } from 'bcrypt';
-import { User, UserRole } from 'src/user/entities/user.entity';
+import { User, UserRole } from 'src/module/user/entities/user.entity';
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 

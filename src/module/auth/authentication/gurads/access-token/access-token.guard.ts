@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   CanActivate,
   ExecutionContext,
@@ -8,8 +9,8 @@ import {
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { REQUEST_USER_KEY } from 'src/auth/auth.constants';
-import jwtConfig from 'src/auth/config/jwt.config';
+import jwtConfig from 'src/config/jwt.config';
+import { REQUEST_USER_KEY } from 'src/module/auth/auth.constants';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {

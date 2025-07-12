@@ -1,4 +1,5 @@
 import { Exclude } from 'class-transformer';
+import { PermissionType } from 'src/module/auth/authentication/permission.type';
 import {
   Column,
   CreateDateColumn,
@@ -7,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { PermissionType } from 'src/auth/authentication/permission.type';
+// import { PermissionType } from 'src/auth/authentication/permission.type';
 
 export enum UserRole {
   ADMIN = 'admin',

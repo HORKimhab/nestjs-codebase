@@ -12,7 +12,7 @@ export const configDB: TypeOrmModuleOptions = {
   host: process.env.DB_HOST || 'localhost',
   port: parseInt(String(process.env.DB_PORT), 10) || 5432,
   username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
+  password: process.env.DB_USERNAME,
   database: process.env.DB_DATABASE,
   logging: ['true', true, 1].includes(process.env.DB_LOGGING || false),
 };

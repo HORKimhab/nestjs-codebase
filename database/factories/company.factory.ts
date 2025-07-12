@@ -1,4 +1,4 @@
-import { Company } from './../../src/company/company.entity';
+import { Company } from 'src/module/company/company.entity';
 import { setSeederFactory } from 'typeorm-extension';
 
 export default setSeederFactory(Company, async (faker) => {

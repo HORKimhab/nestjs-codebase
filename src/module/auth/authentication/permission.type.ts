@@ -1,4 +1,4 @@
-import { UsersPermission } from 'src/user/user.permission';
+import { UsersPermission } from 'src/module/user/user.permission';
 
 export const Permission = {
   ...UsersPermission,

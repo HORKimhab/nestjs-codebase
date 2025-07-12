@@ -4,9 +4,7 @@ import { BcryptService } from './hashing/bcrypt.service';
 import { AuthenticationController } from './authentication/authentication.controller';
 import { AuthenticationService } from './authentication/authentication.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/user/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
-import jwtConfig from './config/jwt.config';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthenticationGuard } from './authentication/gurads/authentication/authentication.guard';
@@ -16,6 +14,8 @@ import { PermissionGuard } from './authentication/gurads/permissions.guard';
 import { PolicyHandlerStorage } from './authentication/policies/policy-handler.storage';
 import { FrameworkContributorPolicyHandler } from './authentication/policies/framework-contributor.policy';
 import { PoliciesGuard } from './authentication/gurads/policies.guard';
+import jwtConfig from 'src/config/jwt.config';
+import { User } from '../user/entities/user.entity';
 
 @Module({
   imports: [

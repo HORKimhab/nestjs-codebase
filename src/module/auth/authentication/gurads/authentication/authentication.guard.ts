@@ -10,7 +10,7 @@ import { Reflector } from '@nestjs/core';
 import { AccessTokenGuard } from '../access-token/access-token.guard';
 import { AuthType } from '../../enums/auth-type.enum';
 import { AUTH_TYPE_KEY, ROLES_KEY } from '../../decorators/auth.decorator';
-import { UserRole } from 'src/user/entities/user.entity';
+import { UserRole } from 'src/module/user/entities/user.entity';
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {

@@ -1,12 +1,10 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { HashingService } from '../hashing/hashing.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
-import jwtConfig from '../config/jwt.config';
 import { ConfigType } from '@nestjs/config';
 import { ActiveUserData } from './interfaces/active-user-data.interface';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
@@ -16,6 +14,8 @@ import {
   RefreshTokenIdsStorage,
 } from './refresh-token-ids.storage';
 import { randomUUID } from 'crypto';
+import jwtConfig from 'src/config/jwt.config';
+import { User } from 'src/module/user/entities/user.entity';
 
 @Injectable()
 export class AuthenticationService {
