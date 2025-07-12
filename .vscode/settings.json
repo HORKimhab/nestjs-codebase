@@ -1,4 +1,32 @@
 {
   "editor.formatOnSave": true,
-  "editor.detectIndentation": false
+  "editor.detectIndentation": false,
+  "editor.wordWrap": "on",
+  "prettier.semi": true,
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "all",
+  "prettier.tabWidth": 2,
+  "prettier.printWidth": 80,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "eslint.run": "onSave",
+  "eslint.format.enable": true,
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.git": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
