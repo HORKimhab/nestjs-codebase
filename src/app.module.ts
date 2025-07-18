@@ -8,6 +8,8 @@ import appConfig from './config/app.config';
 import { CompaniesModule } from './module/company/company.module';
 import { AuthModule } from './module/auth/auth.module';
 import { UserModule } from './module/user/user.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -19,6 +21,9 @@ import { UserModule } from './module/user/user.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: createTypeOrmOptions,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
     }),
     UserModule,
     CompaniesModule,
