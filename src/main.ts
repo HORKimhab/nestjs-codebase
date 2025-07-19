@@ -3,12 +3,18 @@ import { AppModule } from './app.module';
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { setupSwagger } from './config/swagger.config';
 import { ApiKeyGuard } from './module/auth/authentication/gurads/api-key.guard';
-// import { join } from 'path';
+import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const logger = new Logger('Swagger');
+
+  app.useStaticAssets(join(process.cwd(), 'public'), {
+    // prefix: '/public/',
+  });
+
+  console.log('sdfsd', join(process.cwd(), 'public'));
 
   app.enableVersioning({
     type: VersioningType.URI,

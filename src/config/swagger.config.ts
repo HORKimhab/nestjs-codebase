@@ -49,7 +49,7 @@ export function setupSwagger(app: INestApplication): void {
   const theme = new SwaggerTheme();
 
   // Default theme: 'original' or 'dark'
-  const themeName: SwaggerThemeName = SwaggerThemeNameEnum.DARK;
+  const themeName: SwaggerThemeName = SwaggerThemeNameEnum.CLASSIC;
 
   // console.log(
   //   'theme.getBuffer(themeName).toString()',
@@ -63,7 +63,7 @@ export function setupSwagger(app: INestApplication): void {
 
     customCss: theme.getBuffer(themeName).toString(),
     // TODO: 404
-    customJs: '/swagger-theme-toggle.js', // we’ll create this file
+    customJs: '/swagger/swagger-theme-toggle.js', // we’ll create this file
     customSiteTitle: 'API Docs with Theme Toggle',
 
     swaggerOptions: {
