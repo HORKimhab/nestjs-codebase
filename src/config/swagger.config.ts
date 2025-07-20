@@ -13,13 +13,17 @@ export function setupSwagger(app: INestApplication): void {
   const { host, port } = configServer;
   const { authUser, authPassword } = configServer.swagger || {};
 
-  app.use(
-    ['/api/docs', '/api/docs-json'],
-    basicAuth({
-      users: { [authUser]: authPassword },
-      challenge: true,
-    }),
-  );
+  const skipBasicAuthEnvs = ['local', 'develop', 'dev'];
+
+  if (!skipBasicAuthEnvs.includes(process.env.APP_ENV)) {
+    app.use(
+      ['/api/docs', '/api/docs-json'],
+      basicAuth({
+        users: { [authUser]: authPassword },
+        challenge: true,
+      }),
+    );
+  }
 
   const config = new DocumentBuilder()
     .setTitle('API Documentation')
@@ -38,23 +42,27 @@ export function setupSwagger(app: INestApplication): void {
       },
       'JWT-auth', // This name here is important for matching up with @ApiBearerAuth() in your controller!
     )
+    .addApiKey(
+      {
+        type: 'apiKey',
+        name: 'x-api-key',
+        in: 'header',
+        description: 'API Key',
+      },
+      'API-key', // must match @ApiApiKey('API-key')
+    )
     .addServer(`http://${host}:${port}`, 'Development server')
     .build();
 
   const document = SwaggerModule.createDocument(app, config, {
     // 👇 This forces swagger to include all class-validator metadata, even without @ApiProperty
-    deepScanRoutes: true,
+    // deepScanRoutes: true,
   });
 
   const theme = new SwaggerTheme();
 
   // Default theme: 'original' or 'dark'
   const themeName: SwaggerThemeName = SwaggerThemeNameEnum.CLASSIC;
-
-  // console.log(
-  //   'theme.getBuffer(themeName).toString()',
-  //   theme.getBuffer(themeName).toString(),
-  // );
 
   SwaggerModule.setup('api/docs', app, document, {
     // Toggle Light & Dark mode

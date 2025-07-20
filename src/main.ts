@@ -8,13 +8,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
   const logger = new Logger('Swagger');
 
-  app.useStaticAssets(join(process.cwd(), 'public'), {
-    // prefix: '/public/',
-  });
-
-  console.log('sdfsd', join(process.cwd(), 'public'));
+  app.useStaticAssets(join(process.cwd(), 'public'));
 
   app.enableVersioning({
     type: VersioningType.URI,
@@ -34,7 +31,7 @@ async function bootstrap() {
   );
 
   // app.useStaticAssets(join(__dirname, '..', 'public'));
-  app.useGlobalGuards(new ApiKeyGuard());
+  // app.useGlobalGuards(new ApiKeyGuard());
 
   // Setup Swagger documentation
   setupSwagger(app);
@@ -44,5 +41,7 @@ async function bootstrap() {
   // ✅ Use Logger here
   logger.log('📄 Swagger docs available at: http://localhost:3000/api/docs');
   // API KEY
+
+  // app.useLogger(new Logger());
 }
 bootstrap();
