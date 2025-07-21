@@ -107,7 +107,7 @@ export class AuthenticationService {
       });
 
       const user = await this.usersRepository.findOneByOrFail({
-        id: sub,
+        id: sub as unknown as string,
       });
       const isValid = await this.refreshTokenIdsStorage.validate(
         user.id,

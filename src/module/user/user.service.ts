@@ -27,7 +27,7 @@ export class UserService {
     };
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const user = await this.userRepository.findBy({ id });
 
     if (!user) {

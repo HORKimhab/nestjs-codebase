@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { setupSwagger } from './config/swagger.config';
-import { ApiKeyGuard } from './module/auth/authentication/gurads/api-key.guard';
+// import { ApiKeyGuard } from './module/auth/authentication/gurads/api-key.guard';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
@@ -30,7 +30,6 @@ async function bootstrap() {
     }),
   );
 
-  // app.useStaticAssets(join(__dirname, '..', 'public'));
   // app.useGlobalGuards(new ApiKeyGuard());
 
   // Setup Swagger documentation

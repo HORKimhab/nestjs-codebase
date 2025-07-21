@@ -27,6 +27,8 @@ print(response.text)
 # response = requests.get('https://ipinfo.io/json')
 # data = response.json()
 
+
+# TODO
 # print(data)
 # # Example keys: ip, city, region, country, loc, org, postal, timezone
 

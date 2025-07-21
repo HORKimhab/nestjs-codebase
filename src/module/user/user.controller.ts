@@ -23,9 +23,9 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Auth(UserRole.ADMIN)
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
+  // @Auth(UserRole.ADMIN)
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.userService.findOne(+id);
+  // }
 }

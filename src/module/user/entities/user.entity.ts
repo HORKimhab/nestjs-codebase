@@ -2,12 +2,13 @@ import { Exclude } from 'class-transformer';
 import { PermissionType } from 'src/module/auth/authentication/permission.type';
 import {
   Column,
-  CreateDateColumn,
-  DeleteDateColumn,
   Entity,
+  Index,
+  OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
+import { UserInfo } from './user-info.entity';
+import { BaseCommonEntity } from 'src/common/entities/base.common.entity';
 // import { PermissionType } from 'src/auth/authentication/permission.type';
 
 export enum UserRole {
@@ -18,16 +19,15 @@ export enum UserRole {
 }
 
 @Entity('users')
-export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+export class User extends BaseCommonEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({
     name: 'first_name',
     type: 'varchar',
     length: 100,
     nullable: true,
-    default: null,
   })
   firstName: string;
 
@@ -36,10 +36,10 @@ export class User {
     type: 'varchar',
     length: 100,
     nullable: true,
-    default: null,
   })
   lastName: string;
 
+  @Index('IDX_USER_USERNAME')
   @Column({
     name: 'user_name',
     type: 'varchar',
@@ -51,7 +51,6 @@ export class User {
     type: 'varchar',
     length: 255,
     nullable: true,
-    default: null,
     unique: true,
   })
   email: string;
@@ -67,7 +66,6 @@ export class User {
     type: 'varchar',
     length: 50,
     nullable: true,
-    default: null,
   })
   phone: string;
 
@@ -75,10 +73,10 @@ export class User {
     type: 'varchar',
     length: 100,
     nullable: true,
-    default: null,
   })
   avatar: string;
 
+  @Index('IDX_USER_ROLE')
   @Column({
     type: 'enum',
     enum: UserRole,
@@ -88,11 +86,12 @@ export class User {
 
   @Column({
     type: 'json',
-    default: '[]',
-    nullable: true,
+    nullable: false,
+    default: () => "'[]'",
   })
   permissions: PermissionType[];
 
+  @Index('IDX_USER_IS_ACTIVATED')
   @Column({
     name: 'is_activated',
     type: 'boolean',
@@ -100,32 +99,6 @@ export class User {
   })
   isActivated: boolean;
 
-  @CreateDateColumn({
-    name: 'created_at',
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-    precision: 0,
-  })
-  createdAt: Date;
-
-  @UpdateDateColumn({
-    name: 'updated_at',
-    type: 'datetime',
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
-    precision: 0,
-  })
-  updatedAt: Date;
-
-  @DeleteDateColumn({
-    name: 'deleted_at',
-    type: 'datetime',
-    nullable: true,
-    default: null,
-    precision: 0,
-  })
-  deletedAt: Date;
-
-  // @OneToMany(() => Post, (post) => post.user)
-  // posts: Post;
+  @OneToMany(() => UserInfo, (userInfo) => userInfo.user)
+  userInfos: UserInfo[];
 }
