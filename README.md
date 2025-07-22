@@ -70,6 +70,8 @@ Key: check_in_keep_or_env_same45
 
 - npx prettier --write . "Fix: Delete `␍`eslintprettier/prettier fix it "
 
+- Auto add @ApiProperty(): https://docs.nestjs.com/openapi/cli-plugin
+
 ## Fix error Cannot destructure property 'parsed' of 'req' as it is null.
 
 - Check this: https://github.com/nestjsx/crud/issues/835#issuecomment-2143284774

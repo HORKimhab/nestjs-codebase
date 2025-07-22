@@ -2,7 +2,6 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HashingService } from '../hashing/hashing.service';
-import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigType } from '@nestjs/config';
@@ -16,6 +15,7 @@ import {
 import { randomUUID } from 'crypto';
 import jwtConfig from 'src/config/jwt.config';
 import { User } from 'src/module/user/entities/user.entity';
+import { AuthRegisterDto } from './dto/auth-register.dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -28,11 +28,11 @@ export class AuthenticationService {
     private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
   ) {}
 
-  async signUp(signUpDto: SignUpDto) {
+  async authRegisterEmail(dto: AuthRegisterDto) {
     try {
       const user = new User();
-      user.email = signUpDto.email;
-      user.password = await this.hashingService.hash(signUpDto.password);
+      user.email = dto.email;
+      user.password = await this.hashingService.hash(dto.password);
 
       return await this.usersRepository.save(user);
     } catch (err) {
@@ -107,7 +107,7 @@ export class AuthenticationService {
       });
 
       const user = await this.usersRepository.findOneByOrFail({
-        id: sub,
+        id: sub as unknown as string,
       });
       const isValid = await this.refreshTokenIdsStorage.validate(
         user.id,

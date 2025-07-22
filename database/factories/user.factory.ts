@@ -21,7 +21,7 @@ export default setSeederFactory(User, async (faker) => {
   user.role = faker.helpers.arrayElement([
     UserRole.ADMIN,
     UserRole.EDITOR,
-    UserRole.GHOST,
+    UserRole.USER,
     UserRole.VIEWER,
   ]);
   user.isActivated = faker.datatype.boolean();

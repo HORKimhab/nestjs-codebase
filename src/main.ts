@@ -1,12 +1,22 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { setupSwagger } from './config/swagger.config';
-import { ApiKeyGuard } from './module/auth/authentication/gurads/api-key.guard';
+// import { ApiKeyGuard } from './module/auth/authentication/gurads/api-key.guard';
+import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
   const logger = new Logger('Swagger');
+
+  app.useStaticAssets(join(process.cwd(), 'public'));
+
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+  });
 
   // Set global prefix first
   app.setGlobalPrefix('api');
@@ -20,7 +30,7 @@ async function bootstrap() {
     }),
   );
 
-  app.useGlobalGuards(new ApiKeyGuard());
+  // app.useGlobalGuards(new ApiKeyGuard());
 
   // Setup Swagger documentation
   setupSwagger(app);
@@ -30,5 +40,7 @@ async function bootstrap() {
   // ✅ Use Logger here
   logger.log('📄 Swagger docs available at: http://localhost:3000/api/docs');
   // API KEY
+
+  // app.useLogger(new Logger());
 }
 bootstrap();

@@ -56,7 +56,7 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # all fiels in migrations dir
-/database/migrations/*
+# /database/migrations/*
 
 # Ignore 
 nginx/.htpasswd
