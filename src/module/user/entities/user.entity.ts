@@ -7,7 +7,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserInfo } from './user-info.entity';
+import { UserInfo } from './user.info.entity';
 import { BaseCommonEntity } from 'src/common/entities/base.common.entity';
 // import { PermissionType } from 'src/auth/authentication/permission.type';
 

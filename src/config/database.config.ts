@@ -10,7 +10,8 @@ export const createTypeOrmOptions = (
     ...dbConfig,
     retryAttempts: 10,
     retryDelay: 3000,
-    // entities: [__dirname + '/../**/*.entity{.ts,.js}'], // relative to this file
+    //Fix: Entity metadata for User#userInfos was not found...
+    entities: [__dirname + '/../../src/**/*.entity{.ts,.js}'],
     autoLoadEntities: true,
     synchronize: false,
   };

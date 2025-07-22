@@ -76,7 +76,4 @@ export class UserInfo extends BaseCommonEntity {
   @ManyToOne(() => User, (user) => user.userInfos)
   @JoinColumn({ name: 'user_id' })
   user: User;
-
-  @Column('uuid')
-  user_id: string;
 }
