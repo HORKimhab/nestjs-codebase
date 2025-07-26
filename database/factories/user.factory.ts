@@ -1,5 +1,6 @@
+import { UserRole } from '@common/enum';
 import { hash } from 'bcrypt';
-import { UserRole, User } from 'src/module/user/entities/user.entity';
+import { User } from 'src/module/user/entities/user.entity';
 import { setSeederFactory } from 'typeorm-extension';
 
 export default setSeederFactory(User, async (faker) => {

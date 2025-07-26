@@ -2,15 +2,18 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { setupSwagger } from './config/swagger.config';
-// import { ApiKeyGuard } from './module/auth/authentication/gurads/api-key.guard';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import {
+  AllExceptionsFilter,
+  TransformResponseInterceptor,
+} from '@common/filters';
+// import { ApiKeyGuard } from './module/auth/authentication/gurads/api-key.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const logger = new Logger('Swagger');
-
   app.useStaticAssets(join(process.cwd(), 'public'));
 
   app.enableVersioning({
@@ -20,6 +23,8 @@ async function bootstrap() {
 
   // Set global prefix first
   app.setGlobalPrefix('api');
+  app.useGlobalFilters(new AllExceptionsFilter()); // Register filter globally
+  app.useGlobalInterceptors(new TransformResponseInterceptor());
 
   // Global validation pipe
   app.useGlobalPipes(
@@ -37,9 +42,7 @@ async function bootstrap() {
 
   await app.listen(3000);
 
-  // ✅ Use Logger here
   logger.log('📄 Swagger docs available at: http://localhost:3000/api/docs');
-  // API KEY
 
   // app.useLogger(new Logger());
 }

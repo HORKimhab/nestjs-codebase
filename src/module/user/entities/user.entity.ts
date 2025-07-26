@@ -1,25 +1,22 @@
 import { Exclude } from 'class-transformer';
 import { PermissionType } from 'src/module/auth/authentication/permission.type';
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   Entity,
   Index,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserInfo } from './user.info.entity';
-import { BaseCommonEntity } from 'src/common/entities/base.common.entity';
-// import { PermissionType } from 'src/auth/authentication/permission.type';
-
-export enum UserRole {
-  ADMIN = 'admin',
-  EDITOR = 'editor',
-  VIEWER = 'viewer',
-  USER = 'user', // normal user
-}
+import { UserInfo } from './../../user-info/entities/user.info.entity';
+import { BaseEntityColumns } from '@common/decorators';
+import { UserRole } from '@common/enum';
+import { genSalt, hash } from 'bcrypt';
 
 @Entity('users')
-export class User extends BaseCommonEntity {
+@BaseEntityColumns()
+export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -44,6 +41,7 @@ export class User extends BaseCommonEntity {
     name: 'user_name',
     type: 'varchar',
     length: 100,
+    nullable: true,
   })
   userName: string;
 
@@ -55,11 +53,8 @@ export class User extends BaseCommonEntity {
   })
   email: string;
 
-  @Column({
-    type: 'varchar',
-    length: 255,
-  })
   @Exclude({ toPlainOnly: true })
+  @Column({})
   password: string;
 
   @Column({
@@ -95,10 +90,30 @@ export class User extends BaseCommonEntity {
   @Column({
     name: 'is_activated',
     type: 'boolean',
-    default: true,
+    default: false,
   })
   isActivated: boolean;
 
   @OneToMany(() => UserInfo, (userInfo) => userInfo.user)
   userInfos: UserInfo[];
+
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword(): Promise<void> {
+    if (this.password) {
+      const salt = await genSalt();
+      this.password = await hash(this.password, salt);
+    }
+  }
+
+  // https://docs.nestjs.com/techniques/serialization#exclude-properties
+  constructor(partial?: Partial<User>) {
+    if (partial) {
+      Object.assign(this, partial);
+    }
+  }
 }

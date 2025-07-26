@@ -10,6 +10,10 @@
      "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "./dist",
+      "paths": {
+      "@common/*": ["src/common/*"],
+      "@module/*": ["src/module/*"]
+    },
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,

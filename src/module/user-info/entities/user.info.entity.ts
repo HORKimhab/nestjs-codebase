@@ -5,24 +5,38 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from './user.entity';
-import { BaseCommonEntity } from 'src/common/entities/base.common.entity';
+import { User } from 'src/module/user/entities/user.entity';
+import { BaseEntityColumns } from '@common/decorators';
+
+// Sample data
+//  {
+//  "ip": "185.40.4.38",
+//  "hostname": "tor-exit.lokodlare.com",
+//  "city": "Oslo",
+//  "region": "Oslo",
+//  "country": "NO",
+//  "loc": "59.9127,10.7461",
+//  "org": "AS200195 Verasel, Inc.",
+//  "postal": "0001",
+//  "timezone": "Europe/Oslo",
+//  "readme": "https://ipinfo.io/missingauth"
+//  }
 
 @Entity('user-info')
-export class UserInfo extends BaseCommonEntity {
+@BaseEntityColumns()
+export class UserInfo {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('varchar', { name: 'ip', length: 45, nullable: true, default: null })
-  ip: string;
+  @Column('varchar', { length: 45, nullable: true, default: null })
+  publicIp: string;
 
   @Column('varchar', {
-    name: 'hostname',
     length: 45,
     nullable: true,
     default: null,
   })
-  hostname: string;
+  deviceOs: string;
 
   @Column('varchar', {
     name: 'city',
@@ -73,7 +87,14 @@ export class UserInfo extends BaseCommonEntity {
   })
   timezone: string;
 
+  @Column({ name: 'user_id', type: 'uuid' })
+  userId: string;
+
   @ManyToOne(() => User, (user) => user.userInfos)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
 }

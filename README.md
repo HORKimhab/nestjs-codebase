@@ -75,3 +75,9 @@ Key: check_in_keep_or_env_same45
 ## Fix error Cannot destructure property 'parsed' of 'req' as it is null.
 
 - Check this: https://github.com/nestjsx/crud/issues/835#issuecomment-2143284774
+
+## TODO:
+
+- Create table session store userId, verifyCode, createAt +5min, updatedAt, deletedAt, token
+
+- Send mail, verify, logout,

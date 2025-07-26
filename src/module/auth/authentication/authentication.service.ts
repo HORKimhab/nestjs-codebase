@@ -14,8 +14,9 @@ import {
 } from './refresh-token-ids.storage';
 import { randomUUID } from 'crypto';
 import jwtConfig from 'src/config/jwt.config';
-import { User } from 'src/module/user/entities/user.entity';
 import { AuthRegisterDto } from './dto/auth-register.dto';
+import { User } from './../../user/entities/user.entity';
+import { UserResponseDto } from '@module/user/responses/user-response.dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -28,17 +29,22 @@ export class AuthenticationService {
     private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
   ) {}
 
-  async authRegisterEmail(dto: AuthRegisterDto) {
-    try {
-      const user = new User();
-      user.email = dto.email;
-      user.password = await this.hashingService.hash(dto.password);
+  // async authRegisterEmail(dto: AuthRegisterDto): Promise<UserResponseDto> {
+  //   try {
+  //     const user = new User();
+  //     user.email = dto.email;
+  //     user.password = dto.password;
 
-      return await this.usersRepository.save(user);
-    } catch (err) {
-      throw err;
-    }
-  }
+  //     const savedUser = await this.usersRepository.save(user);
+
+  //     // return plainToInstance(AuthUserResponse, savedUser, {
+  //     //   excludeExtraneousValues: true,
+  //     // });
+  //     return savedUser;
+  //   } catch (err) {
+  //     throw err;
+  //   }
+  // }
 
   async signIn(signInDto: SignInDto) {
     const user = await this.usersRepository.findOneBy({

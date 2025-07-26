@@ -1,5 +1,6 @@
+import { UserRole } from '@common/enum';
 import { hash } from 'bcrypt';
-import { User, UserRole } from 'src/module/user/entities/user.entity';
+import { User } from 'src/module/user/entities/user.entity';
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 

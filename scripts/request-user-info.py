@@ -7,30 +7,11 @@ system = platform.system()
 release = platform.release()
 
 data = {
-    "email": "user@example.com",
-    "password": "Secret123",
     "hostname": hostname,
     "os": f"{system} {release}",
-    "ssid": "MyWifi"
 }
 
 response = requests.post('http://localhost:3000/api/v1/auth/user-info', json=data)
-
-print('socket', socket)
-print('platform', platform)
-print(response.status_code)
-print(response.text)
-
-
-# import requests
-
-# response = requests.get('https://ipinfo.io/json')
-# data = response.json()
-
-
-# TODO
-# print(data)
-# # Example keys: ip, city, region, country, loc, org, postal, timezone
 
 # {
 #   "ip": "185.40.4.38",
