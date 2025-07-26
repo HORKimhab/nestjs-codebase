@@ -88,9 +88,9 @@ export class UserController implements CrudController<User> {
     // TODO:
     // Event listener and other
     // Insert data to user & user-info
-    // return;
+    // return
 
-    return this.service.authRegisterEmail(dto);
+    return await this.service.authRegisterEmail(dto);
   }
   // @Auth(UserRole.EDITOR)
   // @Permissions(Permission.Create)

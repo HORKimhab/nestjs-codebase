@@ -23,8 +23,8 @@ async function bootstrap() {
 
   // Set global prefix first
   app.setGlobalPrefix('api');
-  app.useGlobalFilters(new AllExceptionsFilter()); // Register filter globally
-  app.useGlobalInterceptors(new TransformResponseInterceptor());
+  // app.useGlobalFilters(new AllExceptionsFilter()); // Register filter globally
+  // app.useGlobalInterceptors(new TransformResponseInterceptor());
 
   // Global validation pipe
   app.useGlobalPipes(
@@ -42,6 +42,7 @@ async function bootstrap() {
 
   await app.listen(3000);
 
+  // logger.log('🚀 Api project: http://localhost:3000');
   logger.log('📄 Swagger docs available at: http://localhost:3000/api/docs');
 
   // app.useLogger(new Logger());

@@ -36,12 +36,14 @@ export function setupSwagger(app: INestApplication): void {
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'JWT',
-        name: 'JWT',
+        name: 'access-token',
         description: 'Enter JWT token',
         in: 'header',
       },
-      'JWT-auth', // This name here is important for matching up with @ApiBearerAuth() in your controller!
+      // 'JWT-auth', // This name here is important for matching up with @ApiBearerAuth() in your controller!
+      'access-token',
     )
+    .addSecurityRequirements('access-token')
     .addApiKey(
       {
         type: 'apiKey',

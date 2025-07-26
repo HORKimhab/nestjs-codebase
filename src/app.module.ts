@@ -1,4 +1,9 @@
-import { Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,6 +15,8 @@ import { AuthModule } from './module/auth/auth.module';
 import { UserModule } from './module/user/user.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from '@common/logging.interceptor';
+import { UserInfoModule } from '@module/user-info/user.info.module';
+import { SessionModule } from '@module/session/session.module';
 // import { LoggingInterceptor } from '@common/logging.interceptor';
 // import { ServeStaticModule } from '@nestjs/serve-static';
 // import { join } from 'path';
@@ -25,13 +32,11 @@ import { LoggingInterceptor } from '@common/logging.interceptor';
       inject: [ConfigService],
       useFactory: createTypeOrmOptions,
     }),
-    // ServeStaticModule.forRoot({
-    //   rootPath: join(__dirname, '..', 'public'),
-    //   serveRoot: '/swagger', // serve static files under /swagger
-    // }),
     UserModule,
     CompaniesModule,
     AuthModule,
+    UserInfoModule,
+    SessionModule,
   ],
   controllers: [AppController],
   providers: [

@@ -10,4 +10,4 @@ import { UserInfoService } from './user.info.service';
   exports: [UserInfoService],
   controllers: [UserInfoController],
 })
-export class CompaniesModule {}
+export class UserInfoModule {}

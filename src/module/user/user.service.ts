@@ -19,6 +19,8 @@ import { UserResponseDto } from './responses/user-response.dto';
 import { AuthRegisterDto } from '@module/auth/authentication/dto/auth-register.dto';
 import { AuthType } from '@module/auth/authentication/enums/auth-type.enum';
 import { omit } from 'lodash';
+import { SessoinEntity } from '../session/entities/session.entity';
+import { randomSixCode } from '@common/utils/generate';
 // @Injectable()
 // export class UserInfoService extends TypeOrmCrudService<UserInfo> {
 //   constructor(@InjectRepository(UserInfo) repo) {
@@ -28,19 +30,28 @@ import { omit } from 'lodash';
 
 @Injectable()
 export class UserService extends TypeOrmCrudService<User> {
-  constructor(@InjectRepository(User) private userRepository) {
-    super(userRepository);
+  constructor(
+    @InjectRepository(User) protected repo,
+    @InjectRepository(SessoinEntity)
+    private readonly sessionRepo: Repository<SessoinEntity>,
+  ) {
+    super(repo);
   }
 
   async authRegisterEmail(dto: AuthRegisterDto): Promise<UserResponseDto> {
     try {
-      const user = new User({
-        ...dto,
+      const userPayload = new User({ ...dto });
+      const user: User = await this.repo.save(userPayload);
+      const responseUser = omit(user, ['password', 'deletedAt']);
+
+      const sessionPayload = new SessoinEntity({
+        verifyCode: randomSixCode(),
+        userId: user.id,
       });
 
-      const savedUser = await this.userRepository.save(user);
+      await this.sessionRepo.save(sessionPayload);
 
-      return omit(savedUser, ['password', 'deletedAt']);
+      return responseUser;
     } catch (err) {
       throw err;
     }

@@ -13,10 +13,11 @@ import { UserInfo } from './../../user-info/entities/user.info.entity';
 import { BaseEntityColumns } from '@common/decorators';
 import { UserRole } from '@common/enum';
 import { genSalt, hash } from 'bcrypt';
+import { BaseConstructor } from '../../../common/entities/base-constructor.entity';
 
 @Entity('users')
 @BaseEntityColumns()
-export class User {
+export class User extends BaseConstructor<User> {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -111,9 +112,9 @@ export class User {
   }
 
   // https://docs.nestjs.com/techniques/serialization#exclude-properties
-  constructor(partial?: Partial<User>) {
-    if (partial) {
-      Object.assign(this, partial);
-    }
-  }
+  // constructor(partial?: Partial<User>) {
+  //   if (partial) {
+  //     Object.assign(this, partial);
+  //   }
+  // }
 }
