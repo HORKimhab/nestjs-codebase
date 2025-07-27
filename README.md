@@ -80,4 +80,6 @@ Key: check_in_keep_or_env_same45
 
 - Create table session store userId, verifyCode, createAt +5min, updatedAt, deletedAt, token
 
-- Send mail, verify, logout,
+- verify, logout,
+
+- Use content mail from ../verify-email-with-code.hbs

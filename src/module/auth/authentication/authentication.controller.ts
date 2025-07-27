@@ -75,14 +75,6 @@ export class AuthenticationController {
   ) {
     const accessToken = await this.authService.signIn(signInDto);
 
-    console.log({ accessToken });
-
-    // response.cookie('accessToken', accessToken, {
-    //   secure: true,
-    //   httpOnly: true,
-    //   sameSite: true,
-    // });
-
     return accessToken;
   }
 

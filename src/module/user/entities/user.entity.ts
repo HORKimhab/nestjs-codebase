@@ -14,6 +14,7 @@ import { BaseEntityColumns } from '@common/decorators';
 import { UserRole } from '@common/enum';
 import { genSalt, hash } from 'bcrypt';
 import { BaseConstructor } from '../../../common/entities/base-constructor.entity';
+import { SessoinEntity } from '@module/session/entities/session.entity';
 
 @Entity('users')
 @BaseEntityColumns()
@@ -97,6 +98,9 @@ export class User extends BaseConstructor<User> {
 
   @OneToMany(() => UserInfo, (userInfo) => userInfo.user)
   userInfos: UserInfo[];
+
+  @OneToMany(() => SessoinEntity, (session) => session.user)
+  sessions: SessoinEntity[];
 
   createdAt: Date;
   updatedAt: Date;

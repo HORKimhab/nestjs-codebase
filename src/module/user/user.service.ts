@@ -7,10 +7,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-// import { CreateUserDTO } from './request/create-user.dto';
-// import * as bcrypt from 'bcryptjs';
 import { LoginDTO } from './request/login.dto';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Auth } from '@module/auth/authentication/decorators/auth.decorator';
@@ -21,39 +19,69 @@ import { AuthType } from '@module/auth/authentication/enums/auth-type.enum';
 import { omit } from 'lodash';
 import { SessoinEntity } from '../session/entities/session.entity';
 import { randomSixCode } from '@common/utils/generate';
-// @Injectable()
-// export class UserInfoService extends TypeOrmCrudService<UserInfo> {
-//   constructor(@InjectRepository(UserInfo) repo) {
-//     super(repo);
-//   }
-// }
+import { NodemailerService } from '@common/external/mail/mail.service';
 
 @Injectable()
 export class UserService extends TypeOrmCrudService<User> {
   constructor(
     @InjectRepository(User) protected repo,
+    private readonly dataSource: DataSource,
     @InjectRepository(SessoinEntity)
     private readonly sessionRepo: Repository<SessoinEntity>,
+    private readonly nodeMailService: NodemailerService,
   ) {
     super(repo);
   }
 
   async authRegisterEmail(dto: AuthRegisterDto): Promise<UserResponseDto> {
+    const verifyCode = randomSixCode();
+
     try {
-      const userPayload = new User({ ...dto });
-      const user: User = await this.repo.save(userPayload);
-      const responseUser = omit(user, ['password', 'deletedAt']);
+      const responseUser = await this.dataSource.transaction(
+        async (manager) => {
+          const userPayload = new User({ ...dto });
+          const user = await manager.save(userPayload);
+          const sessionPayload = new SessoinEntity({
+            verifyCode,
+            userId: user.id,
+          });
+          await manager.save(sessionPayload);
 
-      const sessionPayload = new SessoinEntity({
-        verifyCode: randomSixCode(),
-        userId: user.id,
-      });
+          return omit(user, ['password', 'deletedAt']);
+        },
+      );
 
-      await this.sessionRepo.save(sessionPayload);
+      const mailContent = `
+      <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
+          <p>Dear ${dto.email},</p>
+          <p>Thank you for registering with us.</p>
+          <p>Your verification code is:</p>
+          <p style="font-size: 16px; font-weight: bold; color: #000;">${verifyCode}</p>
+          <p>Please enter this code to complete your registration process.</p>
+          <p>If you did not request this, please disregard this message.</p>
+          <p>
+              Best regards,<br />
+              The Support Team
+          </p>
+      </div>`;
+
+      this.nodeMailService
+        .sendEmail({
+          sender: 'no-reply@yourapp.com',
+          receiver: dto.email,
+          subject: 'Verify your email',
+          content: mailContent,
+          from: '"Your App Name" <yourname@gmail.com>',
+        })
+        .catch((error) => {
+          console.error('Failed to send verification email:', error);
+        });
 
       return responseUser;
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      console.error('Failed to register user:', error);
+      // Optionally: throw a custom exception or Nest's HttpException
+      throw new Error('Failed to register user. Please try again later.');
     }
   }
 

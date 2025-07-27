@@ -15,16 +15,16 @@ export class SessoinEntity extends BaseConstructor<SessoinEntity> {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'user_id', type: 'uuid' })
-  userId: string;
-
   @Column({ length: 6, nullable: true })
   verifyCode: string;
 
   @Column({ type: 'text', nullable: true })
   token: string;
 
-  @ManyToOne(() => User, (user) => user.userInfos)
+  @Column({ name: 'user_id', type: 'uuid', nullable: true })
+  userId: string;
+
+  @ManyToOne(() => User, (user) => user.sessions, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'user_id' })
   user: User;
 

@@ -29,23 +29,6 @@ export class AuthenticationService {
     private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
   ) {}
 
-  // async authRegisterEmail(dto: AuthRegisterDto): Promise<UserResponseDto> {
-  //   try {
-  //     const user = new User();
-  //     user.email = dto.email;
-  //     user.password = dto.password;
-
-  //     const savedUser = await this.usersRepository.save(user);
-
-  //     // return plainToInstance(AuthUserResponse, savedUser, {
-  //     //   excludeExtraneousValues: true,
-  //     // });
-  //     return savedUser;
-  //   } catch (err) {
-  //     throw err;
-  //   }
-  // }
-
   async signIn(signInDto: SignInDto) {
     const user = await this.usersRepository.findOneBy({
       email: signInDto.email,

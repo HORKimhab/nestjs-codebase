@@ -44,13 +44,24 @@ export default registerAs('app', () => {
     },
 
     // Email Configuration
-    email: {
+    mail: {
       host: env.EMAIL_HOST || 'smtp.gmail.com',
       port: parseInt(env.EMAIL_PORT, 10) || 587,
       secure: env.EMAIL_SECURE === 'true',
       user: env.EMAIL_USER || '',
       password: env.EMAIL_PASSWORD || '',
       from: env.EMAIL_FROM || 'noreply@example.com',
+    },
+
+    mailGun: {
+      apiKey: env.MAILGUN_API_KEY,
+      host: env.MAILGUN_HOST, // Domain
+    },
+
+    // Gmail config
+    gmail: {
+      user: env.GMAIL_USER,
+      pass: env.GMAIL_APP_PASS,
     },
 
     // AWS Configuration
