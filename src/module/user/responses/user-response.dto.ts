@@ -1,6 +1,8 @@
 import { User } from '@module/user/entities/user.entity';
-import { OmitType, PartialType } from '@nestjs/swagger';
+import { PartialType } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 
-export class UserResponseDto extends PartialType(
-  OmitType(User, ['password', 'deletedAt']),
-) {}
+export class UserResponseDto extends PartialType(User) {
+  @Exclude()
+  password: string;
+}

@@ -2,11 +2,11 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HashingService } from '../hashing/hashing.service';
-import { SignInDto } from './dto/sign-in.dto';
+import { SignInDto } from './request/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigType } from '@nestjs/config';
 import { ActiveUserData } from './interfaces/active-user-data.interface';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { RefreshTokenDto } from './request/refresh-token.dto';
 import { pick } from 'lodash';
 import {
   InvalidateRefreshTokenError,
@@ -14,20 +14,56 @@ import {
 } from './refresh-token-ids.storage';
 import { randomUUID } from 'crypto';
 import jwtConfig from 'src/config/jwt.config';
-import { AuthRegisterDto } from './dto/auth-register.dto';
+import { AuthRegisterDto } from './request/auth-register.dto';
 import { User } from './../../user/entities/user.entity';
 import { UserResponseDto } from '@module/user/responses/user-response.dto';
+import { SessoinEntity } from '@module/session/entities/session.entity';
+import { VerifyDto } from './request/verify.dto';
+import { SessionService } from '@module/session/session.service';
 
 @Injectable()
 export class AuthenticationService {
   constructor(
-    @InjectRepository(User) private readonly usersRepository: Repository<User>,
+    @InjectRepository(SessoinEntity)
+    private readonly sessionRepository: Repository<SessoinEntity>,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
     private readonly hashingService: HashingService,
     private readonly jwtService: JwtService,
+    private readonly sessionService: SessionService,
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
     private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
   ) {}
+
+  async verifyEmail(dto: VerifyDto) {
+    const session = await this.sessionService.findOne({
+      where: { ...dto },
+      relations: ['user'],
+      // select:
+    });
+
+    console.log({ session });
+
+    // const user = await this.usersRepository.findOneBy({
+    //   email: signInDto.email,
+    // });
+
+    // if (!user) {
+    //   throw new UnauthorizedException('Email or password is incorrect.');
+    // }
+
+    // const isCorrectPassword = await this.hashingService.compare(
+    //   signInDto.password,
+    //   user.password,
+    // );
+
+    // if (!isCorrectPassword) {
+    //   throw new UnauthorizedException('Email or password is incorrect.');
+    // }
+
+    // return await this.generateToken(user);
+  }
 
   async signIn(signInDto: SignInDto) {
     const user = await this.usersRepository.findOneBy({

@@ -8,12 +8,12 @@ import {
   Res,
 } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
-import { AuthRegisterDto } from './dto/auth-register.dto';
-import { SignInDto } from './dto/sign-in.dto';
+import { AuthRegisterDto } from './request/auth-register.dto';
+import { SignInDto } from './request/sign-in.dto';
 import { Request, Response } from 'express';
 import { Auth } from './decorators/auth.decorator';
 import { AuthType } from './enums/auth-type.enum';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { RefreshTokenDto } from './request/refresh-token.dto';
 import { spawn } from 'child_process';
 import { join } from 'path';
 import { runPythonScript } from '@common/utils';
@@ -24,40 +24,11 @@ import {
   ApiOkResponse,
   ApiResponse,
 } from '@nestjs/swagger';
+import { VerifyDto } from './request/verify.dto';
 
 @Controller('auth')
 export class AuthenticationController {
   constructor(private readonly authService: AuthenticationService) {}
-
-  // @Auth(AuthType.None)
-  // @Post('register/email')
-  // @ApiResponse({
-  //   type: UserResponseDto,
-  //   description: 'User info with access token',
-  // })
-  // async registerEmail(
-  //   @Body() dto: AuthRegisterDto,
-  //   @Req() req: Request,
-  // ): Promise<UserResponseDto> {
-  //   // TODO
-  //   const userAgent = req.get('user-agent');
-
-  //   // Run Python script with spawn
-  //   // const requestUserFile = join(process.cwd(), 'scripts/request-user-info.py');
-  //   // const pythonOutput = await runPythonScript(requestUserFile);
-  //   // if (pythonOutput.success) {
-  //   //   console.log('Python output:', pythonOutput.output);
-  //   // } else {
-  //   //   console.error('Python script failed:', pythonOutput.error);
-  //   // }
-
-  //   // TODO:
-  //   // Event listener and other
-  //   // Insert data to user & user-info
-  //   // return;
-
-  //   return this.authService.authRegisterEmail(dto);
-  // }
 
   // @Post('user-info')
   // @Auth(AuthType.None)
@@ -65,6 +36,14 @@ export class AuthenticationController {
   //   console.log('Received client info from Python:', clientInfo);
   //   return clientInfo;
   // }
+
+  @Auth(AuthType.None)
+  @Post('verify/email')
+  async verifyEmail(@Body() dto: VerifyDto) {
+    const accessToken = await this.authService.verifyEmail(dto);
+
+    return accessToken;
+  }
 
   @Auth(AuthType.None)
   @HttpCode(HttpStatus.OK)

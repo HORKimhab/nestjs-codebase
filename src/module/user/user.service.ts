@@ -14,7 +14,7 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Auth } from '@module/auth/authentication/decorators/auth.decorator';
 import { ApiResponse } from '@nestjs/swagger';
 import { UserResponseDto } from './responses/user-response.dto';
-import { AuthRegisterDto } from '@module/auth/authentication/dto/auth-register.dto';
+import { AuthRegisterDto } from '@module/auth/authentication/request/auth-register.dto';
 import { AuthType } from '@module/auth/authentication/enums/auth-type.enum';
 import { omit } from 'lodash';
 import { SessoinEntity } from '../session/entities/session.entity';
@@ -47,7 +47,7 @@ export class UserService extends TypeOrmCrudService<User> {
           });
           await manager.save(sessionPayload);
 
-          return omit(user, ['password', 'deletedAt']);
+          return user;
         },
       );
 
@@ -71,17 +71,17 @@ export class UserService extends TypeOrmCrudService<User> {
           receiver: dto.email,
           subject: 'Verify your email',
           content: mailContent,
-          from: '"Your App Name" <yourname@gmail.com>',
         })
         .catch((error) => {
-          console.error('Failed to send verification email:', error);
+          console.error(`Failed to send verification email:, ${error}`);
         });
 
       return responseUser;
     } catch (error) {
       console.error('Failed to register user:', error);
-      // Optionally: throw a custom exception or Nest's HttpException
-      throw new Error('Failed to register user. Please try again later.');
+      throw new Error(
+        `Failed to register user. Please try again later. Error: ${error}`,
+      );
     }
   }
 

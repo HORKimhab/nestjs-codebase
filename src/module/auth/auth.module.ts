@@ -16,12 +16,15 @@ import { FrameworkContributorPolicyHandler } from './authentication/policies/fra
 import { PoliciesGuard } from './authentication/gurads/policies.guard';
 import jwtConfig from 'src/config/jwt.config';
 import { User } from '../user/entities/user.entity';
+import { SessoinEntity } from '@module/session/entities/session.entity';
+import { SessionModule } from '@module/session/session.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, SessoinEntity]),
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
+    SessionModule,
   ],
   providers: [
     {

@@ -29,8 +29,6 @@ export function setupSwagger(app: INestApplication): void {
     .setTitle('API Documentation')
     .setDescription('The API description with JWT Authentication')
     .setVersion('1.0')
-    .addTag('auth', 'Authentication endpoints')
-    .addTag('users', 'User management endpoints')
     .addBearerAuth(
       {
         type: 'http',

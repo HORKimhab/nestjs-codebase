@@ -12,9 +12,9 @@ import { UpdateUserDto } from './request/update-user.dto';
 import { CreateUserDTO } from './request/create-user.dto';
 import { UserResponseDto } from './responses/user-response.dto';
 import { CrudController } from '@nestjsx/crud';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
-import { AuthRegisterDto } from '@module/auth/authentication/dto/auth-register.dto';
+import { AuthRegisterDto } from '@module/auth/authentication/request/auth-register.dto';
 import { AuthType } from '@module/auth/authentication/enums/auth-type.enum';
 
 @Crud({
@@ -32,19 +32,18 @@ import { AuthType } from '@module/auth/authentication/enums/auth-type.enum';
   //   ],
   // },
 
-  // query: {
-  //   exclude: ['password'],
-  //   join: {
-  //     company: {
-  //       eager: true,
-  //     },
-  //     // eslint-disable-next-line @typescript-eslint/naming-convention
-  //     'company.projects': {
-  //       eager: true,
-  //     },
-  //   },
-  // },
-
+  query: {
+    exclude: ['password'],
+    join: {
+      sessions: {
+        eager: true,
+      },
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      // 'company.projects': {
+      //   eager: true,
+      // },
+    },
+  },
   dto: {
     create: CreateUserDTO,
     update: UpdateUserDto,
@@ -59,6 +58,7 @@ import { AuthType } from '@module/auth/authentication/enums/auth-type.enum';
     recover: UserResponseDto,
   },
 })
+@ApiTags('User')
 @Controller('user')
 export class UserController implements CrudController<User> {
   constructor(public service: UserService) {}
@@ -75,20 +75,6 @@ export class UserController implements CrudController<User> {
   ): Promise<UserResponseDto> {
     // TODO
     const userAgent = req.get('user-agent');
-
-    // Run Python script with spawn
-    // const requestUserFile = join(process.cwd(), 'scripts/request-user-info.py');
-    // const pythonOutput = await runPythonScript(requestUserFile);
-    // if (pythonOutput.success) {
-    //   console.log('Python output:', pythonOutput.output);
-    // } else {
-    //   console.error('Python script failed:', pythonOutput.error);
-    // }
-
-    // TODO:
-    // Event listener and other
-    // Insert data to user & user-info
-    // return
 
     return await this.service.authRegisterEmail(dto);
   }

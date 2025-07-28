@@ -76,6 +76,25 @@ Key: check_in_keep_or_env_same45
 
 - Check this: https://github.com/nestjsx/crud/issues/835#issuecomment-2143284774
 
+## Run python code
+
+```bash
+
+  Run Python script with spawn
+  const requestUserFile = join(process.cwd(), 'scripts/request-user-info.py');
+  const pythonOutput = await runPythonScript(requestUserFile);
+  if (pythonOutput.success) {
+    console.log('Python output:', pythonOutput.output);
+  } else {
+    console.error('Python script failed:', pythonOutput.error);
+  }
+
+  TODO:
+  Event listener and other
+  Insert data to user & user-info
+  return
+```
+
 ## TODO:
 
 - Create table session store userId, verifyCode, createAt +5min, updatedAt, deletedAt, token
