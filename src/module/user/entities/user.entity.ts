@@ -96,6 +96,9 @@ export class User extends BaseConstructor<User> {
   })
   isActivated: boolean;
 
+  @Column({ type: 'timestamp', nullable: true })
+  verifiedAt: Date;
+
   @OneToMany(() => UserInfo, (userInfo) => userInfo.user)
   userInfos: UserInfo[];
 

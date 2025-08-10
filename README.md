@@ -99,6 +99,8 @@ Key: check_in_keep_or_env_same45
 
 - Create table session store userId, verifyCode, createAt +5min, updatedAt, deletedAt, token
 
-- verify, logout,
+- Verify Expiration Code is Done
+
+- Implement Frontend // Register and Login
 
 - Use content mail from ../verify-email-with-code.hbs

@@ -13,20 +13,32 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    const status =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+    let status = HttpStatus.INTERNAL_SERVER_ERROR;
+    let message: string | string[] | object = 'Internal server error';
+    let error: string | undefined;
 
-    const message =
-      exception instanceof HttpException
-        ? exception.getResponse()
-        : 'Internal server error';
+    if (exception instanceof HttpException) {
+      status = exception.getStatus();
+      const res = exception.getResponse();
 
-    response.status(status).json({
+      if (typeof res === 'string') {
+        message = res;
+      } else if (res && typeof res === 'object') {
+        // Assume res is Record<string, any>
+        const resObj = res as Record<string, any>;
+        // Use nullish coalescing operator to avoid falsey but valid values
+        message = resObj.message ?? 'Unexpected error';
+        error = resObj.error;
+      }
+    }
+
+    const jsonResponse: Record<string, any> = {
       statusCode: status,
       timestamp: new Date().toISOString(),
       message,
-    });
+      ...(error && { error }), // Conditionally add error property only if error is truthy
+    };
+
+    response.status(status).json(jsonResponse);
   }
 }

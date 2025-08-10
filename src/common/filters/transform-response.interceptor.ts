@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { omit } from 'lodash';
 
 @Injectable()
 export class TransformResponseInterceptor implements NestInterceptor {
@@ -13,8 +14,9 @@ export class TransformResponseInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => {
         const message = data?.message || 'Success';
+
         return {
-          data,
+          data: omit(data, ['message']),
           statusCode: context.switchToHttp().getResponse().statusCode,
           timestamp: new Date().toISOString(),
           message,

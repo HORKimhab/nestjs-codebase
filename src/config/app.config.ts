@@ -8,7 +8,7 @@ export default registerAs('app', () => {
     host: env.APP_HOST || 'localhost',
     port: parseInt(env.APP_PORT, 10) || 3000,
     environment: env.APP_ENV || 'development',
-    codeExpirationTime: env.VERIFY_CODE_EXPIRATION_TIME || 3,
+    codeExpirationTime: Number(env.VERIFY_CODE_EXPIRATION_TIME) || 3,
 
     swagger: {
       authUser: env.SWAGGER_AUTH_USER || 'adminNeweSwagger',

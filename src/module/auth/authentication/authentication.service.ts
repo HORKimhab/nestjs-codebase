@@ -1,6 +1,11 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, MoreThan, Not, Repository } from 'typeorm';
 import { HashingService } from '../hashing/hashing.service';
 import { SignInDto } from './request/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -20,6 +25,8 @@ import { UserResponseDto } from '@module/user/responses/user-response.dto';
 import { SessoinEntity } from '@module/session/entities/session.entity';
 import { VerifyDto } from './request/verify.dto';
 import { SessionService } from '@module/session/session.service';
+import appConfig from 'src/config/app.config';
+import { SessionStatus } from '@common/enum';
 
 @Injectable()
 export class AuthenticationService {
@@ -31,43 +38,51 @@ export class AuthenticationService {
     private readonly hashingService: HashingService,
     private readonly jwtService: JwtService,
     private readonly sessionService: SessionService,
+    private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
+
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
-    private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
+
+    @Inject(appConfig.KEY)
+    private readonly configApp: ConfigType<typeof appConfig>,
   ) {}
 
   async verifyEmail(dto: VerifyDto) {
     const session = await this.sessionService.findOne({
-      where: { ...dto },
+      where: {
+        ...dto,
+        expiredAt: MoreThan(new Date()),
+        status: SessionStatus.Pending,
+      },
       relations: ['user'],
-      // select:
     });
 
-    console.log({ session });
+    if (!session) {
+      throw new NotFoundException('Verify code is invalid or expired.');
+    } else {
+      await Promise.all([
+        this.sessionRepository.update(session.id, {
+          status: SessionStatus.VerifyCode,
+          expiredAt: null,
+        }),
 
-    // const user = await this.usersRepository.findOneBy({
-    //   email: signInDto.email,
-    // });
+        this.usersRepository.update(session.user.id, {
+          verifiedAt: new Date(),
+          isActivated: true,
+        }),
+      ]);
+    }
 
-    // if (!user) {
-    //   throw new UnauthorizedException('Email or password is incorrect.');
-    // }
-
-    // const isCorrectPassword = await this.hashingService.compare(
-    //   signInDto.password,
-    //   user.password,
-    // );
-
-    // if (!isCorrectPassword) {
-    //   throw new UnauthorizedException('Email or password is incorrect.');
-    // }
-
-    // return await this.generateToken(user);
+    return {
+      message: 'You account is verified successfully',
+    };
   }
 
   async signIn(signInDto: SignInDto) {
     const user = await this.usersRepository.findOneBy({
       email: signInDto.email,
+      verifiedAt: Not(IsNull()),
+      isActivated: true,
     });
 
     if (!user) {
@@ -102,6 +117,7 @@ export class AuthenticationService {
       }),
     ]);
     await this.refreshTokenIdsStorage.insert(user.id, refreshTokenId);
+    // TODO: Track how many user login
     return {
       accessToken,
       refreshToken,

@@ -30,7 +30,7 @@ export default class UserSeeder implements Seeder {
       await repository.insert([data]);
     }
 
-    const userFactory = await factoryManager.get(User);
+    const userFactory = factoryManager.get(User);
 
     // Insert only one record.
     await userFactory.save();

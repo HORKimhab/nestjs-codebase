@@ -13,3 +13,9 @@ export enum MailProvider {
 export enum NodeMailerProvider {
   GMAIL = 'gmail',
 }
+
+export enum SessionStatus {
+  Pending = 'Pending',
+  VerifyCode = 'VerifyCode',
+  Login = 'Login',
+}

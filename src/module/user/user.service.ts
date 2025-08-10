@@ -1,5 +1,6 @@
 import {
   Body,
+  Inject,
   Injectable,
   NotFoundException,
   Post,
@@ -16,10 +17,12 @@ import { ApiResponse } from '@nestjs/swagger';
 import { UserResponseDto } from './responses/user-response.dto';
 import { AuthRegisterDto } from '@module/auth/authentication/request/auth-register.dto';
 import { AuthType } from '@module/auth/authentication/enums/auth-type.enum';
-import { omit } from 'lodash';
+import { omit, pick } from 'lodash';
 import { SessoinEntity } from '../session/entities/session.entity';
 import { randomSixCode } from '@common/utils/generate';
 import { NodemailerService } from '@common/external/mail/mail.service';
+import { ConfigType } from '@nestjs/config';
+import appConfig from 'src/config/app.config';
 
 @Injectable()
 export class UserService extends TypeOrmCrudService<User> {
@@ -29,6 +32,9 @@ export class UserService extends TypeOrmCrudService<User> {
     @InjectRepository(SessoinEntity)
     private readonly sessionRepo: Repository<SessoinEntity>,
     private readonly nodeMailService: NodemailerService,
+
+    @Inject(appConfig.KEY)
+    private readonly configApp: ConfigType<typeof appConfig>,
   ) {
     super(repo);
   }
@@ -44,39 +50,47 @@ export class UserService extends TypeOrmCrudService<User> {
           const sessionPayload = new SessoinEntity({
             verifyCode,
             userId: user.id,
+            expiredAt: new Date(
+              Date.now() + this.configApp.codeExpirationTime * 60 * 1000,
+            ),
           });
+
           await manager.save(sessionPayload);
 
           return user;
         },
       );
 
-      const mailContent = `
-      <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
-          <p>Dear ${dto.email},</p>
-          <p>Thank you for registering with us.</p>
-          <p>Your verification code is:</p>
-          <p style="font-size: 16px; font-weight: bold; color: #000;">${verifyCode}</p>
-          <p>Please enter this code to complete your registration process.</p>
-          <p>If you did not request this, please disregard this message.</p>
-          <p>
-              Best regards,<br />
-              The Support Team
-          </p>
-      </div>`;
+      // const mailContent = `
+      // <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
+      //     <p>Dear ${dto.email},</p>
+      //     <p>Thank you for registering with us.</p>
+      //     <p>Your verification code is:</p>
+      //     <p style="font-size: 16px; font-weight: bold; color: #000;">${verifyCode}</p>
+      //     <p>Please enter this code to complete your registration process.</p>
+      //     <p>If you did not request this, please disregard this message.</p>
+      //     <p>
+      //         Best regards,<br />
+      //         The Support Team
+      //     </p>
+      // </div>`;
 
-      this.nodeMailService
-        .sendEmail({
-          sender: 'no-reply@yourapp.com',
-          receiver: dto.email,
-          subject: 'Verify your email',
-          content: mailContent,
-        })
-        .catch((error) => {
-          console.error(`Failed to send verification email:, ${error}`);
-        });
+      // this.nodeMailService
+      //   .sendEmail({
+      //     sender: 'no-reply@yourapp.com',
+      //     receiver: dto.email,
+      //     subject: 'Verify your email',
+      //     content: mailContent,
+      //   })
+      //   .catch((error) => {
+      //     console.error(`Failed to send verification email:, ${error}`);
+      //   });
 
-      return responseUser;
+      return {
+        ...pick(responseUser, ['email', 'createdAt']),
+        message:
+          '👏 Thank you for registeration. Please verify email with verify code.',
+      };
     } catch (error) {
       console.error('Failed to register user:', error);
       throw new Error(
