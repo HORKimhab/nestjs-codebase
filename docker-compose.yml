@@ -11,10 +11,12 @@ services:
       - --skip-character-set-client-handshake
       - --skip-innodb-read-only-compressed # Temporary fix for MariaDB 10.6
       # Row size too large (> 8126). Changing some columns to TEXT or BLOB may help. In current row format, BLOB prefix of 0 bytes is stored inline.
-      - --innodb_file_per_table=1
+      - --innodb_file_per_table=ON
       # Error Code: 1118. Row size too large (> 8126). Changing some columns to TEXT or BLOB may help. In current row format,
       - --innodb_strict_mode=OFF
       - --innodb_default_row_format=DYNAMIC
+      - --innodb_large_prefix=ON
+      # - --innodb_page_size=64K
 
       - --innodb_log_file_size=500M # set log file size
       - --innodb_log_buffer_size=800M # set log buffer size
